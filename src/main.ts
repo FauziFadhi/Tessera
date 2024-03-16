@@ -4,7 +4,11 @@ import { satisfies } from 'semver';
 import { engines } from '../package.json';
 import { Logger, VersioningType } from '@nestjs/common';
 import { CustomValidationPipe } from '@utils/pipes';
-import { BaseExceptionFilter, HttpExceptionFilter } from '@utils/filters';
+import {
+  BaseExceptionFilter,
+  HttpExceptionFilter,
+  TypeormExceptionFilter,
+} from '@utils/filters';
 
 async function bootstrap() {
   const nodeVersion = engines.node;
@@ -37,6 +41,7 @@ async function bootstrap() {
   const logger = new Logger();
   app.useGlobalFilters(
     new HttpExceptionFilter(logger),
+    new TypeormExceptionFilter(logger),
     new BaseExceptionFilter(logger),
   );
 

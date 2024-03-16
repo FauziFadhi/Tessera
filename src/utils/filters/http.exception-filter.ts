@@ -9,6 +9,7 @@ import {
 import { VALIDATION_CODE } from '@utils/pipes';
 
 import { Request, Response } from 'express';
+import { responseBody } from '.';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -25,12 +26,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       errorResponse?.['code'] || errorResponse?.['error'] || undefined;
 
     const status = exception.getStatus();
-
-    const meta = {
-      path: request.url,
-      method: request.method,
-      timestamp: new Date().toISOString(),
-    };
 
     const response: Response = ctx.getResponse();
 
@@ -60,10 +55,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
           headers: request.headers,
           query: request.query,
           params: request.params,
+          url: request.url,
         },
         message: errorMessage,
         errors: errorResponse?.['message'],
-
         cause: exception.cause,
         code: errorCode,
       },
@@ -71,10 +66,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
       'HttpException',
     );
 
-    return response.status(exception.getStatus()).send({
-      meta,
-      code: errorCode,
-      detail: errorMessage,
-    });
+    return response.status(exception.getStatus()).send(
+      responseBody({
+        code: errorCode,
+        message: errorMessage,
+        method: request.method,
+        url: request.url,
+      }),
+    );
   }
 }
