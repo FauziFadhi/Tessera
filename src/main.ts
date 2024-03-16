@@ -66,8 +66,8 @@ async function bootstrap() {
 
   const logger = new Logger();
   app.useGlobalFilters(
-    new HttpExceptionFilter(logger),
     new BaseExceptionFilter(logger),
+    new HttpExceptionFilter(logger),
   );
 
   app.enableCors({
