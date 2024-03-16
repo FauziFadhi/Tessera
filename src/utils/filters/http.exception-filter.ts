@@ -50,7 +50,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       });
     }
 
-    this.logger.error(
+    this.logger.log(
       {
         request: {
           body: request.body,

@@ -4,7 +4,11 @@ import { satisfies } from 'semver';
 import { engines } from '../package.json';
 import { Logger, VersioningType } from '@nestjs/common';
 import { CustomValidationPipe } from '@utils/pipes';
-import { BaseExceptionFilter, HttpExceptionFilter } from '@utils/filters';
+import {
+  BaseExceptionFilter,
+  HttpExceptionFilter,
+  TypeormExceptionFilter,
+} from '@utils/filters';
 import * as winston from 'winston';
 import {
   WinstonModule,
@@ -68,7 +72,16 @@ async function bootstrap() {
   app.useGlobalFilters(
     new BaseExceptionFilter(logger),
     new HttpExceptionFilter(logger),
+    new TypeormExceptionFilter(logger),
   );
+
+  process.on('unhandledRejection', (reason, promise) => {
+    logger.error({
+      reason,
+      promise,
+      message: 'Unhandled Rejection',
+    });
+  });
 
   app.enableCors({
     origin: '*',
@@ -76,6 +89,8 @@ async function bootstrap() {
     allowedHeaders: '*',
     credentials: false,
   });
+
+  app.enableShutdownHooks();
 
   await app.listen(3000);
 }

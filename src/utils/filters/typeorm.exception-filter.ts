@@ -8,9 +8,10 @@ import {
 
 import { Request, Response } from 'express';
 import { meta, responseBody } from '.';
+import { TypeORMError } from 'typeorm';
 
-@Catch()
-export class BaseExceptionFilter implements ExceptionFilter {
+@Catch(TypeORMError)
+export class TypeormExceptionFilter implements ExceptionFilter {
   constructor(private readonly logger: Logger) {}
 
   catch(exception: Error, host: ArgumentsHost) {
@@ -36,11 +37,11 @@ export class BaseExceptionFilter implements ExceptionFilter {
         meta: metaData,
         message: errorMessage,
         errors: exception?.['message'],
-        code: errorCode,
         cause: exception.cause,
+        code: errorCode,
       },
       exception.stack,
-      'BaseExceptionFilter',
+      'TypeormExceptionFilter',
     );
 
     return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(
