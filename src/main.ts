@@ -4,7 +4,7 @@ import { satisfies } from 'semver';
 import { engines } from '../package.json';
 import { Logger, VersioningType } from '@nestjs/common';
 import { CustomValidationPipe } from '@utils/pipes';
-import { HttpExceptionFilter } from '@utils/filters';
+import { BaseExceptionFilter, HttpExceptionFilter } from '@utils/filters';
 
 async function bootstrap() {
   const nodeVersion = engines.node;
@@ -16,6 +16,8 @@ async function bootstrap() {
   }
 
   const app = await NestFactory.create(AppModule);
+
+  app.setGlobalPrefix('api');
 
   app.enableVersioning({
     type: VersioningType.URI,
@@ -33,7 +35,10 @@ async function bootstrap() {
   );
 
   const logger = new Logger();
-  app.useGlobalFilters(new HttpExceptionFilter(logger));
+  app.useGlobalFilters(
+    new HttpExceptionFilter(logger),
+    new BaseExceptionFilter(logger),
+  );
 
   app.enableCors({
     origin: '*',
@@ -42,7 +47,6 @@ async function bootstrap() {
     credentials: false,
   });
 
-  app.setGlobalPrefix('api');
   await app.listen(3000);
 }
 bootstrap();
