@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 
 import { Request, Response } from 'express';
-import { responseBody } from '.';
+import { meta, responseBody } from '.';
 
 @Catch()
 export class BaseExceptionFilter implements ExceptionFilter {
@@ -22,6 +22,7 @@ export class BaseExceptionFilter implements ExceptionFilter {
     const response: Response = ctx.getResponse();
 
     const errorMessage = exception.message;
+    const metaData = meta({ url: request.url, method: request.method });
 
     this.logger.error(
       {
@@ -32,6 +33,7 @@ export class BaseExceptionFilter implements ExceptionFilter {
           params: request.params,
           url: request.url,
         },
+        meta: metaData,
         message: errorMessage,
         errors: exception?.['message'],
         cause: exception.cause,
@@ -43,9 +45,8 @@ export class BaseExceptionFilter implements ExceptionFilter {
     return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(
       responseBody({
         code: errorCode,
-        message: errorMessage,
-        url: request.url,
-        method: request.method,
+        message: 'internal server error',
+        meta: metaData,
       }),
     );
   }

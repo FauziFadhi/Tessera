@@ -9,7 +9,7 @@ import {
 import { VALIDATION_CODE } from '@utils/pipes';
 
 import { Request, Response } from 'express';
-import { responseBody } from '.';
+import { meta, responseBody } from '.';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -28,6 +28,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
 
     const response: Response = ctx.getResponse();
+
+    const metaData = meta({ url: request.url, method: request.method });
 
     let errorMessage = exception.message;
 
@@ -57,6 +59,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           params: request.params,
           url: request.url,
         },
+        meta: metaData,
         message: errorMessage,
         errors: errorResponse?.['message'],
         cause: exception.cause,
@@ -70,8 +73,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       responseBody({
         code: errorCode,
         message: errorMessage,
-        method: request.method,
-        url: request.url,
+        meta: metaData,
       }),
     );
   }
