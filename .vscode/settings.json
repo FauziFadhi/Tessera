@@ -1,0 +1,8 @@
+{
+  "eslint.format.enable": true,
+  "eslint.validate": [
+    "typescript",
+    "javascript"
+  ],
+  "files.eol": "\n",
+}
