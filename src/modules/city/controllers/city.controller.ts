@@ -3,7 +3,9 @@ import { CityService } from '../services/city.service';
 import { CityCreateRequest } from './requests/city.request';
 import { transformer } from '@utils/helpers';
 import { CityVm } from './viewmodels/city.viewmodel';
+import { SerializeResponse } from '@utils/decorators';
 
+@SerializeResponse()
 @Controller({
   path: 'cities',
   version: '1',
