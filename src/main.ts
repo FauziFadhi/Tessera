@@ -2,7 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { satisfies } from 'semver';
 import { engines } from '../package.json';
-import { VersioningType } from '@nestjs/common';
+import { Logger, VersioningType } from '@nestjs/common';
+import { CustomValidationPipe } from '@utils/pipes';
+import { HttpExceptionFilter } from '@utils/filters';
 
 async function bootstrap() {
   const nodeVersion = engines.node;
@@ -18,6 +20,20 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
+
+  app.useGlobalPipes(
+    new CustomValidationPipe({
+      whitelist: true,
+      transform: true,
+      stopAtFirstError: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
+
+  const logger = new Logger();
+  app.useGlobalFilters(new HttpExceptionFilter(logger));
 
   app.enableCors({
     origin: '*',
