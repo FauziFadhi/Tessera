@@ -1,12 +1,13 @@
 import { Repository } from 'typeorm';
 import { EventService } from './event.service';
 import { TestBed } from '@automock/jest';
-import { eventCreateDTO, eventMock } from '@mocks/event.mock';
+import { eventCreateMock, eventMock } from '@mocks/event.mock';
 import { Event } from '../entities/event.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CityService } from '@modules/city/services/city.service';
 import { UnprocessableEntityException } from '@nestjs/common';
 import { EventAllFilter } from './types/event-service.types';
+import { cityMock } from '@mocks/city.mock';
 
 describe('EventService', () => {
   let eventService: EventService;
@@ -54,12 +55,8 @@ describe('EventService', () => {
   describe('create', () => {
     it('should create a new event', async () => {
       const createdEvent: Event = eventMock;
-      const eventDTO = eventCreateDTO;
-      cityService.getOne.mockResolvedValueOnce({
-        id: eventDTO.cityId,
-        name: 'City',
-        countryName: 'Indonesia',
-      });
+      const eventDTO = eventCreateMock;
+      cityService.getOne.mockResolvedValueOnce(cityMock);
       eventRepository.save.mockResolvedValueOnce(createdEvent);
 
       const event = await eventService.create(eventDTO);
@@ -70,12 +67,31 @@ describe('EventService', () => {
       expect(event).toBe(createdEvent);
     });
     it('should throw an error if city not found', async () => {
-      const eventDTO = eventCreateDTO;
+      const eventDTO = eventCreateMock;
       cityService.getOne.mockResolvedValueOnce(null);
 
       expect(eventService.create(eventDTO)).rejects.toThrow(
         new UnprocessableEntityException('City not found'),
       );
+
+      expect(eventRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('should call constraintError when save rejects with an error', async () => {
+      const error = new Error('Test Error');
+
+      cityService.getOne.mockResolvedValueOnce(cityMock);
+      eventRepository.save.mockRejectedValueOnce(error);
+
+      const constraintErrorMock = jest.spyOn(Event, 'constraintError');
+
+      await expect(eventService.create(eventCreateMock)).rejects.toThrow(error);
+
+      expect(eventRepository.save).toHaveBeenCalledWith(eventCreateMock);
+
+      expect(constraintErrorMock).toHaveBeenCalledWith(error);
+
+      constraintErrorMock.mockRestore();
     });
   });
 

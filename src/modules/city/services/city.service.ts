@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { City, CityConstraintError } from '../entities/city.entity';
+import { City } from '../entities/city.entity';
 import { CityAllFilter, CityCreateDTO } from './types/city-service.types';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class CityService {
     @InjectRepository(City)
     private repository: Repository<City>,
   ) {}
-  async getAll(query: CityAllFilter): Promise<City[]> {
+  async getAll(query: CityAllFilter = {}): Promise<City[]> {
     const queryBuilder = this.repository.createQueryBuilder('city');
 
     if (query.countryName) {
@@ -20,7 +20,7 @@ export class CityService {
     }
 
     if (query.name) {
-      queryBuilder.where('city.name LIKE :name COLLATE NOCASE', {
+      queryBuilder.andWhere('city.name LIKE :name COLLATE NOCASE', {
         name: `%${query.name}%`,
       });
     }
@@ -38,7 +38,7 @@ export class CityService {
     const city = new City();
     city.name = dto.name;
     city.countryName = dto.countryName;
-    return this.repository.save(city).catch((e) => CityConstraintError(e));
+    return this.repository.save(city).catch((e) => City.constraintError(e));
   }
 
   /**
