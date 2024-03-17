@@ -26,6 +26,9 @@
       "@modules/*": [
         "src/modules/*"
       ],
+      "@mocks/*": [
+        "test/mocks/*"
+      ],
     }
   }
 }
