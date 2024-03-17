@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { CityVm } from './city.viewmodel';
+import { EventCityVm } from './event-city.viewmodel';
 
 export class EventVm {
   @Expose()
@@ -8,7 +8,7 @@ export class EventVm {
   @Expose()
   name: string;
 
-  @Type(() => CityVm)
+  @Type(() => EventCityVm)
   @Expose()
-  city: CityVm;
+  city: EventCityVm;
 }

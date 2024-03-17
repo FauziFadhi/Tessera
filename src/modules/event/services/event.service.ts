@@ -1,23 +1,35 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Event, CityConstraintError } from '../entities/event.entity';
-import { EventCreateDTO } from './types/event-service.types';
+import { EventAllFilter, EventCreateDTO } from './types/event-service.types';
 import { CityService } from '@modules/city/services/city.service';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectRepository(Event)
-    private repository: Repository<Event>,
-
+    private readonly repository: Repository<Event>,
+    private readonly datasource: DataSource,
     private readonly cityService: CityService,
   ) {}
-  async getAll(): Promise<Event[]> {
-    return this.repository.find({
-      select: ['id', 'name'],
-      relations: ['city'],
-    });
+  async getAll(filter: EventAllFilter): Promise<Event[]> {
+    const queryBuilder = this.datasource
+      .getRepository(Event)
+      .createQueryBuilder('event')
+      .leftJoinAndSelect('event.city', 'city');
+
+    if (filter.cityId) {
+      queryBuilder.where('event.cityId = :cityId', { cityId: filter.cityId });
+    }
+
+    if (filter.name) {
+      queryBuilder.where('event.name LIKE :name COLLATE NOCASE', {
+        name: `%${filter.name}%`,
+      });
+    }
+
+    return queryBuilder.getMany();
   }
 
   /**

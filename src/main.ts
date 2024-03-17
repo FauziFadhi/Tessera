@@ -14,6 +14,7 @@ import {
   WinstonModule,
   utilities as nestWinstonModuleUtil,
 } from 'nest-winston';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 function createNewrelicWinstonFormatter() {
   const newrelicFormatter = require('@newrelic/winston-enricher');
@@ -89,6 +90,12 @@ async function bootstrap() {
     allowedHeaders: '*',
     credentials: false,
   });
+  const config = new DocumentBuilder().setTitle('Apps').build();
+  const document = SwaggerModule.createDocument(app, config, {
+    include: [AppModule],
+    deepScanRoutes: true,
+  });
+  SwaggerModule.setup('api/docs', app, document);
 
   app.enableShutdownHooks();
 

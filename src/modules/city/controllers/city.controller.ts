@@ -11,7 +11,9 @@ import { CityCreateRequest } from './requests/city.request';
 import { transformer } from '@utils/helpers';
 import { CityVm } from './viewmodels/city.viewmodel';
 import { SerializeResponse } from '@utils/decorators';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('City')
 @SerializeResponse()
 @Controller({
   path: 'cities',

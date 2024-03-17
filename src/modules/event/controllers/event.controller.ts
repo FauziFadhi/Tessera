@@ -5,13 +5,16 @@ import {
   NotFoundException,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { EventService } from '../services/event.service';
-import { EventCreateRequest } from './requests/event.request';
+import { EventCreateRequest, EventGetQuery } from './requests/event.request';
 import { transformer } from '@utils/helpers';
 import { EventVm } from './viewmodels/event.viewmodel';
 import { SerializeResponse } from '@utils/decorators';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Event')
 @SerializeResponse()
 @Controller({
   path: 'events',
@@ -21,8 +24,8 @@ export class EventController {
   constructor(private readonly service: EventService) {}
 
   @Get()
-  async getAll(): Promise<EventVm[]> {
-    const events = await this.service.getAll();
+  async getAll(@Query() q: EventGetQuery): Promise<EventVm[]> {
+    const events = await this.service.getAll(q);
     return transformer(EventVm, events, { raw: true });
   }
 

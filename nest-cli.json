@@ -4,6 +4,23 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "manualRestart": true
+    "manualRestart": true,
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "introspectComments": true,
+          "classValidatorShim": true,
+          "controllerFileNameSuffix": [
+            ".controller.ts"
+          ],
+          "dtoFileNameSuffix": [
+            ".viewmodel.ts",
+            ".request.ts",
+            ".transformer.ts"
+          ]
+        }
+      }
+    ]
   }
 }
