@@ -24,9 +24,9 @@ export class Event {
 
   @ManyToOne('City', (city: City) => city.id)
   @JoinColumn({ name: 'city_id' })
-  city: City;
-}
+  city?: City;
 
-export function CityConstraintError(e: QueryFailedError): never {
-  throw e;
+  static constraintError(e: QueryFailedError): never {
+    throw e;
+  }
 }

@@ -1,7 +1,7 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
-import { Event, CityConstraintError } from '../entities/event.entity';
+import { Repository } from 'typeorm';
+import { Event } from '../entities/event.entity';
 import { EventAllFilter, EventCreateDTO } from './types/event-service.types';
 import { CityService } from '@modules/city/services/city.service';
 
@@ -12,17 +12,19 @@ export class EventService {
     private readonly repository: Repository<Event>,
     private readonly cityService: CityService,
   ) {}
-  async getAll(filter: EventAllFilter): Promise<Event[]> {
-    const queryBuilder = this.repository
+  async getAll(filter: EventAllFilter = {}): Promise<Event[]> {
+    let queryBuilder = this.repository
       .createQueryBuilder('event')
       .leftJoinAndSelect('event.city', 'city');
 
     if (filter.cityId) {
-      queryBuilder.where('event.cityId = :cityId', { cityId: filter.cityId });
+      queryBuilder = queryBuilder.where('event.cityId = :cityId', {
+        cityId: filter.cityId,
+      });
     }
 
     if (filter.name) {
-      queryBuilder.where('event.name LIKE :name COLLATE NOCASE', {
+      queryBuilder.andWhere('event.name LIKE :name COLLATE NOCASE', {
         name: `%${filter.name}%`,
       });
     }
@@ -58,7 +60,7 @@ export class EventService {
     event.name = dto.name;
     event.cityId = dto.cityId;
     event.price = dto.price;
-    return this.repository.save(event).catch((e) => CityConstraintError(e));
+    return this.repository.save(event).catch((e) => Event.constraintError(e));
   }
 
   /**
