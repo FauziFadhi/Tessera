@@ -10,12 +10,10 @@ export class EventService {
   constructor(
     @InjectRepository(Event)
     private readonly repository: Repository<Event>,
-    private readonly datasource: DataSource,
     private readonly cityService: CityService,
   ) {}
   async getAll(filter: EventAllFilter): Promise<Event[]> {
-    const queryBuilder = this.datasource
-      .getRepository(Event)
+    const queryBuilder = this.repository
       .createQueryBuilder('event')
       .leftJoinAndSelect('event.city', 'city');
 

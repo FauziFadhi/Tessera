@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CityCreateRequest {
   /**
@@ -14,4 +14,13 @@ export class CityCreateRequest {
   @IsString()
   @IsNotEmpty()
   countryName: string;
+}
+export class CityGetQuery {
+  @IsString()
+  @IsOptional()
+  cityId?: string;
+
+  @IsString()
+  @IsOptional()
+  name?: string;
 }

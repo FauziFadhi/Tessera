@@ -5,9 +5,10 @@ import {
   NotFoundException,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CityService } from '../services/city.service';
-import { CityCreateRequest } from './requests/city.request';
+import { CityCreateRequest, CityGetQuery } from './requests/city.request';
 import { transformer } from '@utils/helpers';
 import { CityVm } from './viewmodels/city.viewmodel';
 import { SerializeResponse } from '@utils/decorators';
@@ -23,8 +24,8 @@ export class CityController {
   constructor(private readonly service: CityService) {}
 
   @Get()
-  async getAll(): Promise<CityVm[]> {
-    const cities = await this.service.getAll();
+  async getAll(@Query() query: CityGetQuery): Promise<CityVm[]> {
+    const cities = await this.service.getAll(query);
     return transformer(CityVm, cities, { raw: true });
   }
 
