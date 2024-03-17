@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { CityService } from '../services/city.service';
 import { CityCreateRequest } from './requests/city.request';
 import { transformer } from '@utils/helpers';
@@ -22,6 +29,8 @@ export class CityController {
   @Get(':cityId')
   async getOne(@Param('cityId') cityId: string): Promise<CityVm> {
     const city = await this.service.getOne(cityId);
+    if (!city) throw new NotFoundException('City not found');
+
     return transformer(CityVm, city, { raw: true });
   }
 

@@ -28,13 +28,6 @@ export class CreateCityTable1710598371355 implements MigrationInterface {
     await queryRunner.createIndex(
       'cities',
       new TableIndex({
-        columnNames: ['id'],
-      }),
-    );
-
-    await queryRunner.createIndex(
-      'cities',
-      new TableIndex({
         columnNames: ['name', 'country_name'],
         isUnique: true,
       }),
@@ -47,12 +40,6 @@ export class CreateCityTable1710598371355 implements MigrationInterface {
       new TableIndex({
         columnNames: ['name', 'country_name'],
         isUnique: true,
-      }),
-    );
-    await queryRunner.dropIndex(
-      'cities',
-      new TableIndex({
-        columnNames: ['id'],
       }),
     );
     await queryRunner.dropTable('cities');
