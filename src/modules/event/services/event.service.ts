@@ -27,6 +27,18 @@ export class EventService {
       });
     }
 
+    if (filter.maxPrice) {
+      queryBuilder.andWhere('event.price <= :maxPrice', {
+        maxPrice: filter.maxPrice,
+      });
+    }
+
+    if (filter.minPrice) {
+      queryBuilder.andWhere('event.price >= :minPrice', {
+        minPrice: filter.minPrice,
+      });
+    }
+
     return queryBuilder.getMany();
   }
 
@@ -45,6 +57,7 @@ export class EventService {
     const event = new Event();
     event.name = dto.name;
     event.cityId = dto.cityId;
+    event.price = dto.price;
     return this.repository.save(event).catch((e) => CityConstraintError(e));
   }
 

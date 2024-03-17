@@ -8,6 +8,9 @@ export class EventVm {
   @Expose()
   name: string;
 
+  @Expose()
+  price: number;
+
   @Type(() => EventCityVm)
   @Expose()
   city: EventCityVm;

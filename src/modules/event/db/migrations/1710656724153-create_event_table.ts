@@ -26,6 +26,10 @@ export class CreateEventTable1710656724153 implements MigrationInterface {
             name: 'city_id',
             type: 'varchar',
           },
+          {
+            name: 'price',
+            type: 'float',
+          },
         ],
       }),
     );

@@ -19,6 +19,9 @@ export class Event {
   @Column({ name: 'city_id' })
   cityId: string;
 
+  @Column({ type: 'float' })
+  price: number;
+
   @ManyToOne('City', (city: City) => city.id)
   @JoinColumn({ name: 'city_id' })
   city: City;
