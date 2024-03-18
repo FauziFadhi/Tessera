@@ -1,4 +1,5 @@
 import type { City } from '@modules/city/entities/city.entity';
+import { BadRequestException } from '@nestjs/common';
 import {
   Entity,
   Column,
@@ -27,6 +28,15 @@ export class Event {
   city?: City;
 
   static constraintError(e: QueryFailedError): never {
+    const driverError = e.driverError;
+    if ('code' in driverError && driverError?.code === 'SQLITE_CONSTRAINT') {
+      // UNIQUE CONSTRAINT
+      if (driverError?.['errno'] == 19) {
+        if (driverError.message.includes('name')) {
+          throw new BadRequestException('Event name already exists');
+        }
+      }
+    }
     throw e;
   }
 }

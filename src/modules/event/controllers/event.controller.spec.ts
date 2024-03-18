@@ -6,7 +6,7 @@ import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { bulkEventMocks, eventCreateMock, eventMock } from '@mocks/event.mock';
 import { Event } from '../entities/event.entity';
 import { options } from '@config/datasource';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { CityService } from '@modules/city/services/city.service';
 import { bulkCityCreateMock, cityCreateMock, cityMock } from '@mocks/city.mock';
 import { transformer } from '@utils/helpers';
@@ -114,18 +114,18 @@ describe('EventController (Integration)', () => {
       );
     });
 
-    // it('should throw an error if event already exists', async () => {
-    //   ({ id: cityId } = await cityService.create(cityCreateMock));
-    //   const eventCreateDTO = {
-    //     ...eventCreateMock,
-    //     cityId,
-    //   };
+    it('should throw an error if event already exists', async () => {
+      ({ id: cityId } = await cityService.create(cityCreateMock));
+      const eventCreateDTO = {
+        ...eventCreateMock,
+        cityId,
+      };
 
-    //   ({ id: eventId } = await eventService.create(eventCreateDTO));
-    //   await expect(eventController.create(eventCreateDTO)).rejects.toThrow(
-    //     new NotFoundException('Event already exists'),
-    //   );
-    // });
+      ({ id: eventId } = await eventService.create(eventCreateDTO));
+      await expect(eventController.create(eventCreateDTO)).rejects.toThrow(
+        new BadRequestException('Event name already exists'),
+      );
+    });
   });
 
   describe('getAll', () => {

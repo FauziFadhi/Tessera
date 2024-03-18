@@ -1,11 +1,14 @@
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { EventService } from './event.service';
 import { TestBed } from '@automock/jest';
 import { eventCreateMock, eventMock } from '@mocks/event.mock';
 import { Event } from '../entities/event.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CityService } from '@modules/city/services/city.service';
-import { UnprocessableEntityException } from '@nestjs/common';
+import {
+  BadRequestException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { EventAllFilter } from './types/event-service.types';
 import { cityMock } from '@mocks/city.mock';
 
@@ -78,14 +81,20 @@ describe('EventService', () => {
     });
 
     it('should call constraintError when save rejects with an error', async () => {
-      const error = new Error('Test Error');
+      const error = new QueryFailedError('query error', [], {
+        code: 'SQLITE_CONSTRAINT',
+        message: 'UNIQUE constraint failed: city.name',
+        errno: 19,
+      } as any);
 
       cityService.getOne.mockResolvedValueOnce(cityMock);
       eventRepository.save.mockRejectedValueOnce(error);
 
       const constraintErrorMock = jest.spyOn(Event, 'constraintError');
 
-      await expect(eventService.create(eventCreateMock)).rejects.toThrow(error);
+      await expect(eventService.create(eventCreateMock)).rejects.toThrow(
+        new BadRequestException('Event name already exists'),
+      );
 
       expect(eventRepository.save).toHaveBeenCalledWith(eventCreateMock);
 
