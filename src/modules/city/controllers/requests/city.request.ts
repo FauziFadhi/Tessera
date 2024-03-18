@@ -18,7 +18,7 @@ export class CityCreateRequest {
 export class CityGetQuery {
   @IsString()
   @IsOptional()
-  cityId?: string;
+  countryName?: string;
 
   @IsString()
   @IsOptional()
