@@ -15,7 +15,8 @@
 ```
 
 ## Modules
-- City
+- `City` has unique `name` constraint for combination of `countryName` and `name`
+- `Event` has unique `name` constraint for combination of `cityId` and `name`
 
 ## Test Coverage
 - Automation Testing (Unit Test & Integration Test)
