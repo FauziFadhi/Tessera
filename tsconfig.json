@@ -29,6 +29,9 @@
       "@mocks/*": [
         "test/mocks/*"
       ],
+      "@config/*": [
+        "src/config/*"
+      ],
     }
   }
 }

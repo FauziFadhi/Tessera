@@ -50,4 +50,14 @@ export class CityService {
   async getOne(cityId: string): Promise<City | null> {
     return this.repository.findOne({ where: { id: cityId } });
   }
+
+  /**
+   * Deletes a city by its ID.
+   *
+   * @param {string} cityId - The ID of the city to delete
+   * @return {Promise<void>} Promise that resolves when the city is deleted
+   */
+  async delete(cityId: string): Promise<void> {
+    await this.repository.delete({ id: cityId });
+  }
 }

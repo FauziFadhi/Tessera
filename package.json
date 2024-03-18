@@ -84,7 +84,9 @@
     "testEnvironment": "node",
     "moduleNameMapper": {
       "^@modules/(.*)$": "<rootDir>/modules/$1",
-      "^@mocks/(.*)$": "<rootDir>/../test/mocks/$1"
+      "^@mocks/(.*)$": "<rootDir>/../test/mocks/$1",
+      "^@utils/(.*)$": "<rootDir>/utils/$1",
+      "^@config/(.*)$": "<rootDir>/config/$1"
     }
   }
 }
