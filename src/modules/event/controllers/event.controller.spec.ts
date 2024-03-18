@@ -5,7 +5,7 @@ import { CityModule } from '@modules/city/city.module';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { bulkEventMocks, eventCreateMock, eventMock } from '@mocks/event.mock';
 import { Event } from '../entities/event.entity';
-import { options } from '@config/datasource';
+import { optionsTest } from '@config/datasource';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { CityService } from '@modules/city/services/city.service';
 import { bulkCityCreateMock, cityCreateMock, cityMock } from '@mocks/city.mock';
@@ -22,7 +22,7 @@ describe('EventController (Integration)', () => {
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [
-        TypeOrmModule.forRoot(options),
+        TypeOrmModule.forRoot(optionsTest),
         TypeOrmModule.forFeature([Event]),
         CityModule,
       ],

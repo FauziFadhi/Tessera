@@ -9,11 +9,25 @@
 ```shell
   npm install
 ```
-3. run database migrations
-```shell
-  npm run migrate
-```
-4. run this command to run the project.
+3. run this command to run the project.
 ```shell
   npm run start:dev
 ```
+
+## Modules
+- City
+
+## Test Coverage
+- Automation Testing (Unit Test & Integration Test)
+```shell
+  npm run test
+```
+
+- Test Coverage
+```
+  npm run test:cov
+```
+
+### Test Coverage Result
+this is test coverage for `unit test` and `integration test` for `Event Module`
+![Alt text](image.png)

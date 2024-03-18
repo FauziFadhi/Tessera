@@ -9,6 +9,7 @@ export const options: DataSourceOptions = {
   type: 'sqlite',
   database: 'tessera.sqlite',
   entities: [City, Event],
+  migrationsRun: true,
   migrations: [
     CreateCityTable1710598371355,
     CreateEventTable1710656724153,
@@ -16,5 +17,17 @@ export const options: DataSourceOptions = {
   ],
 };
 
+export const optionsTest: DataSourceOptions = {
+  type: 'sqlite',
+  database: 'tessera-test.sqlite',
+  entities: [City, Event],
+  migrationsRun: true,
+  dropSchema: true,
+  migrations: [
+    CreateCityTable1710598371355,
+    CreateEventTable1710656724153,
+    AddUniqueNameEventTable1710776435330,
+  ],
+};
 const datasource = new DataSource(options);
 export default datasource;
