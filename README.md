@@ -1,6 +1,6 @@
 ## Links
 - Postman: https://documenter.getpostman.com/view/4219273/2sA2xnxVfW
-- Swagger Link: `localhost:3000/api/docs`
+- Swagger Link: `localhost:3000/api/docs` after you run the project locally
 
 ## How to Run
 
@@ -9,7 +9,7 @@
 ```shell
   npm install
 ```
-3. run this command to run the project.
+3. run this command to run the project. dont worry the database migration or table DDL automatically run.
 ```shell
   npm run start:dev
 ```
